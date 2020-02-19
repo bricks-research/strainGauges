@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+
+<head>
+  <title></title>
+   <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+   <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+  <div id='app'>
+      <v-app>
+          <v-content>
+            <v-container>
+              <v-row>
+                <v-col v-for="(b,i) in bridges" :key="b.name">
+                  <v-card>
+                    <v-card-title >
+                      <v-btn text  @click="chooseBridge(i)">{{b.name}} {{b.date}}</v-btn>
+                    </v-card-title>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-container>
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-card>
+                    <v-card-title>
+                      Test: {{bridge.name}} {{bridge.date}} {{bridge.details}}
+                    </v-card-title>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-content>
+        </v-app>
+   
+  </div>
+
+  <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+  <script src='https://unpkg.com/vue'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js'></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+  
+
+  <script>
+
+    var app = new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data: {
+        rows: [],
+        
+        selected:0,
+        bridges:[
+            {
+                name:"Ponca",
+                date:"July 25,2019",
+                details:"C002800420P",
+                tests:[
+                    {
+                        run:1,
+                        direction:"n",
+                        lane:"e",
+                        speed:0
+                    }
+
+                ]
+            },
+            {
+                name:"Waterloo",
+                date:"July 25,2019",
+                details:"C002801720",
+            },
+            {
+                name:"Lincoln",
+                date:"July 13,2019",
+                details:"C0051235502",
+            },
+            {
+                name:"Ashland",
+                date:"July 13,2019",
+                details:"C007800491001",
+            }
+        ]
+
+      },
+      mounted(){
+          let that = this;
+        $.getJSON( "data.json", function( data ) {
+            that.data = data;
+            console.log(that.data);
+        });
+        
+      },
+      computed:{
+          bridge(){
+              return this.bridges[this.selected];
+          }
+      },
+      methods: {
+          chooseBridge(i){
+              this.selected = i;
+          }
+       
+      },
+    });
+
+    
+
+   
+
+   
+
+  </script>
+
+</body>
+
+</html>
