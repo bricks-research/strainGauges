@@ -2,89 +2,210 @@
 <html>
 
 <head>
-  <title></title>
-   <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
-   <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
-   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <title></title>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 </head>
 
 <body>
-  <div id='app'>
-      <v-app>
-          <v-content>
-            <v-container>
-              <v-row>
-                <v-col v-for="(b,i) in bridges" :key="b.name">
-                  <v-card>
-                    <v-card-title >
-                      <v-btn text  @click="chooseBridge(i)">{{b.name}} {{b.date}}</v-btn>
-                    </v-card-title>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </v-container>
-            <v-container>
-              <v-row>
-                <v-col>
-                  <v-card>
-                    <v-card-title>
-                      Test: {{bridge.name}} {{bridge.date}} {{bridge.details}}
-                    </v-card-title>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-content>
+    <div id='app'>
+        <v-app>
+            <v-content>
+                <v-container>
+                    <v-row>
+                        <v-col v-for="(b,i) in bridgeNames" :key="b">
+                            <v-btn :color="bridge==b?'blue':'white'" @click="chooseBridge(b)">{{b}}</v-btn>
+                        </v-col>
+                    </v-row>
+                </v-container>
+                <v-container>
+                    <v-row>
+                        <v-col>
+                            <v-card>
+                                <v-card-title>
+                                    {{bridge}} {{bridgeTestDate}}
+                                    <v-container>
+                                        <v-row>
+                                            <v-col v-for="s in testSpeeds" :key="s">
+                                                <v-btn :color="speed==s?'blue':'white'" @click="chooseSpeed(s)">{{s}}
+                                                </v-btn>
+                                            </v-col>
+                                        </v-row>
+                                    </v-container>
+                                    <v-container>
+                                        <v-row>
+                                            <v-col v-for="r in testRuns" :key="r">
+                                                <v-btn :color="run==r?'blue':'white'" @click="chooseRun(r)">{{r}}
+                                                </v-btn>
+                                            </v-col>
+                                        </v-row>
+                                    </v-container>
+                                </v-card-title>
+                            </v-card>
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </v-content>
+            <v-content>
+                <v-slider min="1" :max="rows.length" v-model="t"></v-slider>
+                <v-container>
+                    <v-layout>
+                        <v-flex>
+                            <v-card>
+                                <v-container>
+                                    <v-row v-if="rows.length > 0">
+                                        <v-col v-for="i in rows[t].length" :key="i">
+                                            <v-card :color="getColor(rows[t][i])">
+                                                {{labels[i]}} {{shorten(rows[t][i])}}
+                                            </v-card>
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
+                            </v-card>
+                        </v-flex>
+                    </v-layout>
+                </v-container>
+            </v-content>
         </v-app>
-   
-  </div>
 
-  <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
-  <script src='https://unpkg.com/vue'></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js'></script>
-  <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
-  
+    </div>
 
-  <script>
+    <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+    <script src='https://unpkg.com/vue'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"
+        integrity="sha256-VeNaFBVDhoX3H+gJ37DpT/nTuZTdjYro9yBruHjVmoQ=" crossorigin="anonymous"></script>
 
-    var app = new Vue({
-      el: '#app',
-      vuetify: new Vuetify(),
-      data: {
-        rows: [],
-        
-        selected:0,
-        data:[]
 
-      },
-      mounted(){
-          let that = this;
-        $.getJSON( "data.json", function( data ) {
-            that.data = data;
-            console.log(that.data);
+    <script>
+
+        let colorOptions = [
+            { amount: "10", color: "blue darken-4" },
+            { amount: "20", color: "blue darken-3" },
+            { amount: "30", color: "blue darken-2" },
+            { amount: "40", color: "blue darken-1" },
+            { amount: "50", color: "blue" },
+            { amount: "60", color: "blue lighten-1" },
+            { amount: "70", color: "blue lighten-2" },
+            { amount: "80", color: "blue lighten-3" },
+            { amount: "90", color: "blue lighten-4" },
+            { amount: "100", color: "blue lighten-5" },
+        ]
+
+        var app = new Vue({
+            el: '#app',
+            vuetify: new Vuetify(),
+            data: {
+                rows: [],
+                t: 0,
+                bridge: "Ponca",
+                speed: 0,
+                run: 0,
+                selected: 0,
+                data: []
+
+            },
+
+            mounted() {
+                let that = this;
+                $.getJSON("data.json", function (data) {
+                    that.data = data;
+                    console.log(that.data);
+                });
+
+            },
+            computed: {
+                bridgeData() {
+                    if (!this.bridge) return [];
+                    return this.data.filter(i => i.Bridge == this.bridge);
+                },
+                bridgeDataAtSpeed() {
+                    if (!this.bridge) return [];
+                    return this.bridgeData.filter(i => i.Speed == this.speed);
+                },
+                speedData() {
+                    if (!this.bridge) return [];
+                    return this.bridgeData.filter(i => i.Speed == +this.speed);
+                },
+                testRuns() {
+                    if (!this.bridge) return [];
+                    return _.uniqBy(this.bridgeDataAtSpeed, "Test Run").map(i => i["Test Run"]);
+                },
+                testSpeeds() {
+                    if (!this.bridge) return [];
+                    return _.uniqBy(this.bridgeData, "Speed").map(i => i.Speed);
+                },
+                bridgeTestDate() {
+                    if (!this.bridge || !this.data) return ""
+                    return this.data.find(i => i.Bridge == this.bridge).Date;
+                },
+                bridgeNames() {
+                    if (!this.data) return []
+                    return _.uniqBy(this.data, 'Bridge').map(i => i.Bridge);
+                }
+            },
+            methods: {
+                chooseBridge(b) {
+                    this.bridge = b;
+                    this.chooseSpeed(0);
+                },
+                chooseSpeed(s) {
+                    this.speed = s;
+                    this.chooseRun(0);
+                },
+                chooseRun(r) {
+                    let that = this;
+                    this.run = r;
+                    let file = this.data.find(i => i.Bridge == this.bridge && i.Speed == this.speed && i["Test Run"] == this.run);
+                    if (!file) return that.processData("");
+
+                    let uri = "./data/" + file.FileName + ".csv";
+                    uri = uri.replace("Ponca", "Ponka");
+                    console.log(uri);
+
+                    $(document).ready(function () {
+                        $.ajax({
+                            type: "GET",
+                            url: uri,
+                            dataType: "text",
+                            success: function (data) { that.processData(data); }
+                        });
+                    });
+                },
+                processData(data) {
+                    this.lines = data.split("\n");
+                    this.labels = this.lines[0].split(",");
+                    for (let i = 1; i < this.lines.length; i++) {
+                        this.rows.push(this.lines[i].split(","));
+                    }
+
+                },
+                shorten(s) {
+                    if (!s) return "--"
+                    return s.substring(0, 5);
+                },
+                getColor(c) {
+                    if (!c) return "red";
+                    for (let i = 0; i < colorOptions.length; i++) {
+                        if (+c < +(colorOptions[i].amount))
+                            return colorOptions[i].color;
+                    }
+                    return colorOptions[colorOptions.length - 1].color;
+                }
+
+
+            },
         });
-        
-      },
-      computed:{
-          bridge(){
-              return this.bridges[this.selected];
-          }
-      },
-      methods: {
-          chooseBridge(i){
-              this.selected = i;
-          }
-       
-      },
-    });
 
-    
 
-   
 
-   
 
-  </script>
+
+
+
+    </script>
 
 </body>
 
