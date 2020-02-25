@@ -12,6 +12,7 @@
     <div id='app'>
         <v-app>
             <v-content>
+                {{temp}}
                 <v-container>
                     <v-row>
                         <v-col v-for="(b,i) in bridgeNames" :key="b">
@@ -47,17 +48,40 @@
                     </v-row>
                 </v-container>
             </v-content>
-            <v-content>
-                <v-slider min="1" :max="rows.length" v-model="t"></v-slider>
+            
+            <v-content v-if="rows().length > 0">
+                <div>
+                    Date of Test: {{date}}
+                </div>
+                <div>
+                    Speed of Travel: {{speed}}
+                </div>
+                <div>
+                    Type of Bridge: {{type}}
+                </div>
+                <div>
+                    Direction of Travel: {{directionTraveled}}
+                </div>
+                <div>
+                    Line of Travel: {{laneTraveled}}
+                </div>
+                <div>
+                    Notes: {{notes}}
+                </div>
+                <div>
+                    Data point {{t}} of {{rows().length}}
+                </div>
+                <v-slider min="1" :max="rows().length" v-model="t"></v-slider>
                 <v-container>
                     <v-layout>
                         <v-flex>
                             <v-card>
                                 <v-container>
-                                    <v-row v-if="rows.length > 0">
-                                        <v-col v-for="i in rows[t].length" :key="i">
-                                            <v-card :color="getColor(rows[t][i])">
-                                                {{labels[i]}} {{shorten(rows[t][i])}}
+                                    <v-row v-if="rows().length > 0">
+                                        <v-col v-for="i in rows()[t].length" :key="i">
+                                            <v-card :color="getColor(rows()[t][i])" >
+                                                <div>{{labels[i]}}</div>
+                                                <div > {{shorten(rows()[t][i])}}</div>
                                             </v-card>
                                         </v-col>
                                     </v-row>
@@ -94,20 +118,28 @@
             { amount: "100", color: "blue lighten-5" },
         ]
 
+        _rows = []
+
         var app = new Vue({
             el: '#app',
             vuetify: new Vuetify(),
             data: {
-                rows: [],
+               temp:"hi",
+                date:"",
+                type:"",
+                directionTraveled:"",
+                laneTraveled:"",
+                notes:"",
                 t: 0,
                 bridge: "Ponca",
                 speed: 0,
                 run: 0,
                 selected: 0,
-                data: []
+                data: [],
+                labels:[],
+                
 
             },
-
             mounted() {
                 let that = this;
                 $.getJSON("data.json", function (data) {
@@ -117,6 +149,7 @@
 
             },
             computed: {
+                
                 bridgeData() {
                     if (!this.bridge) return [];
                     return this.data.filter(i => i.Bridge == this.bridge);
@@ -147,6 +180,9 @@
                 }
             },
             methods: {
+                rows(){
+                    return _rows;
+                },
                 chooseBridge(b) {
                     this.bridge = b;
                     this.chooseSpeed(0);
@@ -159,9 +195,21 @@
                     let that = this;
                     this.run = r;
                     let file = this.data.find(i => i.Bridge == this.bridge && i.Speed == this.speed && i["Test Run"] == this.run);
-                    if (!file) return that.processData("");
+                    if (!file) 
+                    {
+                       _rows = [];
+                        return ;
+                    }
+                    this.date = file.Date;
+                    this.speed = file.Speed;
+                    this.type = file.Type;
+                    this.directionTraveled = file.DirectionTraveled;
+                    this.laneTraveled = file.LaneTraveled;
+                    this.notes = file.Notes;
 
-                    let uri = "./data/" + file.FileName + ".csv";
+                    //let sheetName = "("
+
+                    let uri = "./data/" + file.FileName + " (SHEET2).csv";
                     uri = uri.replace("Ponca", "Ponka");
                     console.log(uri);
 
@@ -171,16 +219,23 @@
                             url: uri,
                             dataType: "text",
                             success: function (data) { that.processData(data); }
+
                         });
                     });
                 },
                 processData(data) {
+                    this.temp = Math.random(),
+                    console.log(this.temp);
+                    console.log("Processing data");
                     this.lines = data.split("\n");
-                    this.labels = this.lines[0].split(",");
+                    _rows = [];
                     for (let i = 1; i < this.lines.length; i++) {
-                        this.rows.push(this.lines[i].split(","));
+                        _rows.push(this.lines[i].split(","));
                     }
-
+                    this.labels = this.lines[0].split(",");
+                    console.log("Done processing data");
+                    console.log(this.rows().length);
+                    
                 },
                 shorten(s) {
                     if (!s) return "--"
