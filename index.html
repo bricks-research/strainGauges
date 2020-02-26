@@ -12,104 +12,147 @@
     <div id='app'>
         <v-app>
             <v-content>
-                <div>{{temp}}</div>
+                <div class="white--text">{{temp}}</div>
                 <v-container>
                     <v-row>
+                        <v-col>
+                            <div class="display-2 text-center mb-12">Strain Guage Test Data</div>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col class="title">
+                            Pick a location:
+                        </v-col>
                         <v-col v-for="(b,i) in bridgeNames" :key="b">
                             <v-btn :color="bridge==b?'blue':'white'" @click="chooseBridge(b)">{{b}}</v-btn>
                         </v-col>
                     </v-row>
-                </v-container>
-                <v-container>
+
                     <v-row>
+                        <v-col class="title">
+                            Pick a test speed:
+                        </v-col>
+                        <v-col v-for="s in testSpeeds" :key="s">
+                            <v-btn :color="speed==s?'blue':'white'" @click="chooseSpeed(s)">{{s}}
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+
+                    <v-row>
+                        <v-col class="title">
+                            Pick a test run:
+                        </v-col>
+                        <v-col v-for="r in testRuns" :key="r">
+                            <v-btn :color="run==r?'blue':'white'" @click="chooseRun(r)">{{r}}
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col>
+                            <v-switch v-model="showSensorName" label="Show Sensor Names">
+                        </v-col>
+                    </v-row>
+
+                </v-container>
+                <v-container v-if="rows().length > 0" class="text-center">
+                    <v-row class="text-center">
                         <v-col>
                             <v-card>
-                                <v-card-title>
-                                    {{bridge}} {{bridgeTestDate}}
-                                    <v-container>
-                                        <v-row>
-                                            <v-col v-for="s in testSpeeds" :key="s">
-                                                <v-btn :color="speed==s?'blue':'white'" @click="chooseSpeed(s)">{{s}}
-                                                </v-btn>
-                                            </v-col>
-                                        </v-row>
-                                    </v-container>
-                                    <v-container>
-                                        <v-row>
-                                            <v-col v-for="r in testRuns" :key="r">
-                                                <v-btn :color="run==r?'blue':'white'" @click="chooseRun(r)">{{r}}
-                                                </v-btn>
-                                            </v-col>
-                                        </v-row>
-                                    </v-container>
-                                </v-card-title>
+                                <v-container>
+                                    <v-row>
+                                        <v-col>
+                                            <div>Date of Test:</div>
+                                            <div class="title">{{date}}</div>
+                                        </v-col>
+                                        <v-col>
+                                            <div>
+                                                Speed of Travel:</div>
+                                            <div class="title"> {{speed}}
+                                            </div>
+
+                                        </v-col>
+                                        <v-col>
+
+                                            <div>
+                                                Type of Bridge:</div>
+                                            <div class="title"> {{type}}
+                                            </div>
+
+                                        </v-col>
+                                        <v-col>
+
+                                            <div>
+                                                Direction of Travel:</div>
+                                            <div class="title"> {{directionTraveled}}
+                                            </div>
+
+                                        </v-col>
+                                        <v-col>
+
+                                            <div>
+                                                Lane of Travel:</div>
+                                            <div class="title"> {{laneTraveled}}
+                                            </div>
+
+                                        </v-col>
+                                        <v-col>
+
+                                            <div>
+                                                Notes:</div>
+                                            <div class="title"> {{notes}}
+                                            </div>
+
+                                        </v-col>
+                                        <v-col>
+
+                                            <div>
+                                                Total Data Points:</div>
+                                            <div class="title"> {{rows().length}}
+                                            </div>
+
+
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
                             </v-card>
-                        </v-col>
-                    </v-row>
-                </v-container>
-            </v-content>
-
-            <v-content v-if="rows().length > 0">
-                <div>
-                    Date of Test: {{date}}
-                </div>
-                <div>
-                    Speed of Travel: {{speed}}
-                </div>
-                <div>
-                    Type of Bridge: {{type}}
-                </div>
-                <div>
-                    Direction of Travel: {{directionTraveled}}
-                </div>
-                <div>
-                    Lane of Travel: {{laneTraveled}}
-                </div>
-                <div>
-                    Notes: {{notes}}
-                </div>
-                <div>
-                    Data point {{t}} of {{rows().length}}
-                </div>
-                <v-slider min="1" :max="rows().length" v-model="t"></v-slider>
-
-                <v-container class="text-center">
-                    <v-row>
-                        <v-col cols="12">
-                            {{bridgeDataUp}}
-                        </v-col>
+                            <v-col>
                     </v-row>
                     <v-row>
-                        <v-col>
-
+                        <v-col class="title">
                             Legend:
-
                         </v-col>
-                        <v-col v-for="colorOption in colorOptions" :key="colorOption.amount">
+                        <v-col v-for="colorOption in colorOptions" :key="colorOption.amount" class="text-center">
                             <v-card :color="colorOption.color">
                                 {{colorOption.amount}}
                             </v-card>
+                        </v-col>
+                    </v-row>
+                   
+                    <v-row class="my-5">
+                        <v-col cols="1" class="title">
+                            Timeline:
+                        </v-col >
+                        <v-col cols="11"> 
+                            <v-slider min="1" :max="rows().length" v-model="t" thumb-label="always" class="mb-n5"></v-slider>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col cols="12" class="title">
+                            {{bridgeDataUp}}
                         </v-col>
                     </v-row>
                     <v-row>
                         <v-col>
                             <v-card>
                                 <v-container>
-                                    <!--<v-row>
-                    <v-col v-for="i in rows()[t].length" :key="i">
-                      <v-card :color="getColor(rows()[t][i])">
-                        <div>{{labels[i]}}</div>
-                        <div> {{shorten(rows()[t][i])}}</div>
-                      </v-card>
-                    </v-col>
-                  </v-row>-->
+
                                     <v-row>
                                         <v-col>
                                             Top Sensors
                                         </v-col>
                                         <v-col v-for="bridge in currentBridge.topLayer" :key="bridge">
                                             <v-card :color="getColor(getBridge(bridge))">
-                                                <div>{{bridge ? bridge : "-"}}</div>
+                                                <div v-if="showSensorName">{{bridge ? bridge : "-"}}</div>
                                                 <div>{{getBridge(bridge)}} </div>
                                             </v-card>
                                         </v-col>
@@ -120,7 +163,7 @@
                                         </v-col>
                                         <v-col v-for="bridge in currentBridge.centerLayer" :key="bridge">
                                             <v-card :color="getColor(getBridge(bridge))">
-                                                <div>{{bridge ? bridge : "-"}}</div>
+                                                <div v-if="showSensorName">{{bridge ? bridge : "-"}}</div>
                                                 <div>{{getBridge(bridge)}} </div>
                                             </v-card>
                                         </v-col>
@@ -131,7 +174,7 @@
                                         </v-col>
                                         <v-col v-for="bridge in currentBridge.otherSensors" :key="bridge">
                                             <v-card :color="getColor(getBridge(bridge))">
-                                                <div>{{bridge ? bridge : "-"}}</div>
+                                                <div v-if="showSensorName">{{bridge ? bridge : "-"}}</div>
                                                 <div>{{getBridge(bridge)}} </div>
                                             </v-card>
                                         </v-col>
@@ -142,7 +185,7 @@
                                         </v-col>
                                         <v-col v-for="bridge in currentBridge.bottomLayer" :key="bridge">
                                             <v-card :color="getColor(getBridge(bridge))">
-                                                <div>{{bridge ? bridge : "-"}}</div>
+                                                <div v-if="showSensorName">{{bridge ? bridge : "-"}}</div>
                                                 <div>{{getBridge(bridge)}} </div>
                                             </v-card>
                                         </v-col>
@@ -153,7 +196,7 @@
                                         </v-col>
                                         <v-col v-for="bridge in currentBridge.otherSensors2" :key="bridge">
                                             <v-card :color="getColor(getBridge(bridge))">
-                                                <div>{{bridge ? bridge : "-"}}</div>
+                                                <div v-if="showSensorName">{{bridge ? bridge : "-"}}</div>
                                                 <div>{{getBridge(bridge)}} </div>
                                             </v-card>
                                         </v-col>
@@ -162,7 +205,22 @@
                             </v-card>
                         </v-col>
                     </v-row>
+                    <v-row>
+                        <v-col cols="12" class="title">
+                            South
+                        </v-col>
+                    </v-row>
+
                 </v-container>
+                <v-container v-else class="title text-center">
+                    <v-row>
+                        <v-col>
+                            Pick a location, speed and test run to see results here
+                        </v-col>
+                    </v-row>
+
+                </v-container>
+
             </v-content>
         </v-app>
 
@@ -196,6 +254,7 @@
                 notes: "",
                 t: 0,
                 bridge: "Ponca",
+                showSensorName:false,
 
 
                 speed: 0,
@@ -285,10 +344,10 @@
             },
             methods: {
                 getBridge(bridge) {
-                    if (!bridge) return "";
+                    if (!bridge) return "-";
                     let index = this.labels.findIndex(i => i.includes(bridge))
                     let value = this.rows()[this.t][index];
-                    if (!value) return ""
+                    if (!value) return "-"
                     let shortened = value.substring(0, 4);
                     return shortened;
                 },
@@ -335,11 +394,11 @@
                         uri = uri.replace("Ponca", "Ponka");
 
                     }
-                    else{
-                        if(file.Bridge == Ashland){
+                    else {
+                        if (file.Bridge == Ashland) {
                             uri += `CONC_${file.Speed}MPH_${paddedRun} (SHEET1).csv`
                         }
-                        else{
+                        else {
                             uri += `STEEL_${file.Speed}MPH_${paddedRun} (SHEET1).csv`
                         }
                     }
@@ -375,7 +434,7 @@
                     return s.substring(0, 5);
                 },
                 getColor(c) {
-                    if (!c) return "white";
+                    if (!c || c == "-") return "white";
                     for (let i = 0; i < this.colorOptions.length; i++) {
                         if (+c < +(this.colorOptions[i].amount))
                             return this.colorOptions[i].color;
