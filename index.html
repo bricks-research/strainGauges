@@ -12,7 +12,7 @@
     <div id='app'>
         <v-app>
             <v-content>
-                {{temp}}
+                <div>{{temp}}</div>
                 <v-container>
                     <v-row>
                         <v-col v-for="(b,i) in bridgeNames" :key="b">
@@ -81,9 +81,9 @@
                     </v-row>
                     <v-row>
                         <v-col>
-                            
-                                Legend:
-                            
+
+                            Legend:
+
                         </v-col>
                         <v-col v-for="colorOption in colorOptions" :key="colorOption.amount">
                             <v-card :color="colorOption.color">
@@ -196,8 +196,8 @@
                 notes: "",
                 t: 0,
                 bridge: "Ponca",
-              
-                
+
+
                 speed: 0,
                 run: 0,
                 selected: 0,
@@ -246,7 +246,7 @@
 
             },
             computed: {
-                currentBridge(){
+                currentBridge() {
                     let index = this.bridgeNames.indexOf(this.bridge);
                     return this.bridges[index];
                 },
@@ -258,8 +258,8 @@
                     if (!this.bridge) return [];
                     return this.bridgeData.filter(i => i.Speed == this.speed);
                 },
-                bridgeDataUp(){
-                    if(!this.bridges) return "No bridges";
+                bridgeDataUp() {
+                    if (!this.bridges) return "No bridges";
                     return this.currentBridge.up;
                 },
                 speedData() {
@@ -318,12 +318,32 @@
                     this.directionTraveled = file.DirectionTraveled;
                     this.laneTraveled = file.LaneTraveled;
                     this.notes = file.Notes;
-                    
 
-                    //let sheetName = "("
 
-                    let uri = "./data/" + file.FileName + " (SHEET2).csv";
-                    uri = uri.replace("Ponca", "Ponka");
+                    //Now figure out the file name
+                    let sheet = "(SHEET2)"
+                    let Ponca = "Ponca";
+                    let Waterloo = "Waterloo";
+                    let Ashland = "Ashland";
+                    let Licoln = "Licoln";
+
+                    let uri = "./data/";
+                    let paddedRun = this.run < 10 ? "0" + this.run : "" + this.run;
+
+                    if (file.Bridge == Ponca || file.Bridge == Waterloo) {
+                        uri += file.FileName + " (SHEET2).csv";
+                        uri = uri.replace("Ponca", "Ponka");
+
+                    }
+                    else{
+                        if(file.Bridge == Ashland){
+                            uri += `CONC_${file.Speed}MPH_${paddedRun} (SHEET1).csv`
+                        }
+                        else{
+                            uri += `STEEL_${file.Speed}MPH_${paddedRun} (SHEET1).csv`
+                        }
+                    }
+
                     console.log(uri);
 
                     $(document).ready(function () {
