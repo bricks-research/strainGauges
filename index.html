@@ -2,265 +2,309 @@
 <html>
 
 <head>
-    <title></title>
-    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <title></title>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 </head>
 
 <body>
-    <div id='app'>
-        <v-app>
-            <v-content>
-                {{temp}}
-                <v-container>
+  <div id='app'>
+    <v-app>
+      <v-content>
+        {{temp}}
+        <v-container>
+          <v-row>
+            <v-col v-for="(b,i) in bridgeNames" :key="b">
+              <v-btn :color="bridge==b?'blue':'white'" @click="chooseBridge(b)">{{b}}</v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-container>
+          <v-row>
+            <v-col>
+              <v-card>
+                <v-card-title>
+                  {{bridge}} {{bridgeTestDate}}
+                  <v-container>
                     <v-row>
-                        <v-col v-for="(b,i) in bridgeNames" :key="b">
-                            <v-btn :color="bridge==b?'blue':'white'" @click="chooseBridge(b)">{{b}}</v-btn>
-                        </v-col>
+                      <v-col v-for="s in testSpeeds" :key="s">
+                        <v-btn :color="speed==s?'blue':'white'" @click="chooseSpeed(s)">{{s}}
+                        </v-btn>
+                      </v-col>
                     </v-row>
-                </v-container>
-                <v-container>
+                  </v-container>
+                  <v-container>
                     <v-row>
-                        <v-col>
-                            <v-card>
-                                <v-card-title>
-                                    {{bridge}} {{bridgeTestDate}}
-                                    <v-container>
-                                        <v-row>
-                                            <v-col v-for="s in testSpeeds" :key="s">
-                                                <v-btn :color="speed==s?'blue':'white'" @click="chooseSpeed(s)">{{s}}
-                                                </v-btn>
-                                            </v-col>
-                                        </v-row>
-                                    </v-container>
-                                    <v-container>
-                                        <v-row>
-                                            <v-col v-for="r in testRuns" :key="r">
-                                                <v-btn :color="run==r?'blue':'white'" @click="chooseRun(r)">{{r}}
-                                                </v-btn>
-                                            </v-col>
-                                        </v-row>
-                                    </v-container>
-                                </v-card-title>
-                            </v-card>
-                        </v-col>
+                      <v-col v-for="r in testRuns" :key="r">
+                        <v-btn :color="run==r?'blue':'white'" @click="chooseRun(r)">{{r}}
+                        </v-btn>
+                      </v-col>
                     </v-row>
-                </v-container>
-            </v-content>
-            
-            <v-content v-if="rows().length > 0">
-                <div>
-                    Date of Test: {{date}}
-                </div>
-                <div>
-                    Speed of Travel: {{speed}}
-                </div>
-                <div>
-                    Type of Bridge: {{type}}
-                </div>
-                <div>
-                    Direction of Travel: {{directionTraveled}}
-                </div>
-                <div>
-                    Line of Travel: {{laneTraveled}}
-                </div>
-                <div>
-                    Notes: {{notes}}
-                </div>
-                <div>
-                    Data point {{t}} of {{rows().length}}
-                </div>
-                <v-slider min="1" :max="rows().length" v-model="t"></v-slider>
+                  </v-container>
+                </v-card-title>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-content>
+
+      <v-content v-if="rows().length > 0">
+        <div>
+          Date of Test: {{date}}
+        </div>
+        <div>
+          Speed of Travel: {{speed}}
+        </div>
+        <div>
+          Type of Bridge: {{type}}
+        </div>
+        <div>
+          Direction of Travel: {{directionTraveled}}
+        </div>
+        <div>
+          Line of Travel: {{laneTraveled}}
+        </div>
+        <div>
+          Notes: {{notes}}
+        </div>
+        <div>
+          Data point {{t}} of {{rows().length}}
+        </div>
+        <v-slider min="1" :max="rows().length" v-model="t"></v-slider>
+        <v-container>
+          <v-layout>
+            <v-flex>
+              <v-card>
                 <v-container>
-                    <v-layout>
-                        <v-flex>
-                            <v-card>
-                                <v-container>
-                                    <v-row v-if="rows().length > 0">
-                                        <v-col v-for="i in rows()[t].length" :key="i">
-                                            <v-card :color="getColor(rows()[t][i])" >
-                                                <div>{{labels[i]}}</div>
-                                                <div > {{shorten(rows()[t][i])}}</div>
-                                            </v-card>
-                                        </v-col>
-                                    </v-row>
-                                </v-container>
-                            </v-card>
-                        </v-flex>
-                    </v-layout>
+                  <!--<v-row>
+                    <v-col v-for="i in rows()[t].length" :key="i">
+                      <v-card :color="getColor(rows()[t][i])">
+                        <div>{{labels[i]}}</div>
+                        <div> {{shorten(rows()[t][i])}}</div>
+                      </v-card>
+                    </v-col>
+                  </v-row>-->
+                  <v-row>
+                    <v-col v-for="bridge in bridges[0].topLayer" :key="bridge">
+                      <v-card :color="getColor(getBridge(bridge))">
+                        <div>{{bridge ? bridge : "None"}}</div>
+                        <div>{{getBridge(bridge)}} </div>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col v-for="bridge in bridges[0].centerLayer" :key="bridge">
+                      <v-card :color="getColor(getBridge(bridge))">
+                        <div>{{bridge ? bridge : "None"}}</div>
+                        <div>{{getBridge(bridge)}} </div>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col v-for="bridge in bridges[0].otherSensors" :key="bridge">
+                      <v-card :color="getColor(getBridge(bridge))">
+                        <div>{{bridge ? bridge : "None"}}</div>
+                        <div>{{getBridge(bridge)}} </div>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col v-for="bridge in bridges[0].bottomLayer" :key="bridge">
+                      <v-card :color="getColor(getBridge(bridge))">
+                        <div>{{bridge ? bridge : "None"}}</div>
+                        <div>{{getBridge(bridge)}} </div>
+                      </v-card>
+                    </v-col>
+                  </v-row>
                 </v-container>
-            </v-content>
-        </v-app>
+              </v-card>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-content>
+    </v-app>
 
-    </div>
+  </div>
 
-    <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
-    <script src='https://unpkg.com/vue'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js'></script>
-    <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"
-        integrity="sha256-VeNaFBVDhoX3H+gJ37DpT/nTuZTdjYro9yBruHjVmoQ=" crossorigin="anonymous"></script>
-
-
-    <script>
-
-        let colorOptions = [
-            { amount: "10", color: "blue darken-4" },
-            { amount: "20", color: "blue darken-3" },
-            { amount: "30", color: "blue darken-2" },
-            { amount: "40", color: "blue darken-1" },
-            { amount: "50", color: "blue" },
-            { amount: "60", color: "blue lighten-1" },
-            { amount: "70", color: "blue lighten-2" },
-            { amount: "80", color: "blue lighten-3" },
-            { amount: "90", color: "blue lighten-4" },
-            { amount: "100", color: "blue lighten-5" },
-        ]
-
-        _rows = []
-
-        var app = new Vue({
-            el: '#app',
-            vuetify: new Vuetify(),
-            data: {
-               temp:"hi",
-                date:"",
-                type:"",
-                directionTraveled:"",
-                laneTraveled:"",
-                notes:"",
-                t: 0,
-                bridge: "Ponca",
-                speed: 0,
-                run: 0,
-                selected: 0,
-                data: [],
-                labels:[],
-                
-
-            },
-            mounted() {
-                let that = this;
-                $.getJSON("data.json", function (data) {
-                    that.data = data;
-                    console.log(that.data);
-                });
-
-            },
-            computed: {
-                
-                bridgeData() {
-                    if (!this.bridge) return [];
-                    return this.data.filter(i => i.Bridge == this.bridge);
-                },
-                bridgeDataAtSpeed() {
-                    if (!this.bridge) return [];
-                    return this.bridgeData.filter(i => i.Speed == this.speed);
-                },
-                speedData() {
-                    if (!this.bridge) return [];
-                    return this.bridgeData.filter(i => i.Speed == +this.speed);
-                },
-                testRuns() {
-                    if (!this.bridge) return [];
-                    return _.uniqBy(this.bridgeDataAtSpeed, "Test Run").map(i => i["Test Run"]);
-                },
-                testSpeeds() {
-                    if (!this.bridge) return [];
-                    return _.uniqBy(this.bridgeData, "Speed").map(i => i.Speed);
-                },
-                bridgeTestDate() {
-                    if (!this.bridge || !this.data) return ""
-                    return this.data.find(i => i.Bridge == this.bridge).Date;
-                },
-                bridgeNames() {
-                    if (!this.data) return []
-                    return _.uniqBy(this.data, 'Bridge').map(i => i.Bridge);
-                }
-            },
-            methods: {
-                rows(){
-                    return _rows;
-                },
-                chooseBridge(b) {
-                    this.bridge = b;
-                    this.chooseSpeed(0);
-                },
-                chooseSpeed(s) {
-                    this.speed = s;
-                    this.chooseRun(0);
-                },
-                chooseRun(r) {
-                    let that = this;
-                    this.run = r;
-                    let file = this.data.find(i => i.Bridge == this.bridge && i.Speed == this.speed && i["Test Run"] == this.run);
-                    if (!file) 
-                    {
-                       _rows = [];
-                        return ;
-                    }
-                    this.date = file.Date;
-                    this.speed = file.Speed;
-                    this.type = file.Type;
-                    this.directionTraveled = file.DirectionTraveled;
-                    this.laneTraveled = file.LaneTraveled;
-                    this.notes = file.Notes;
-
-                    //let sheetName = "("
-
-                    let uri = "./data/" + file.FileName + " (SHEET2).csv";
-                    uri = uri.replace("Ponca", "Ponka");
-                    console.log(uri);
-
-                    $(document).ready(function () {
-                        $.ajax({
-                            type: "GET",
-                            url: uri,
-                            dataType: "text",
-                            success: function (data) { that.processData(data); }
-
-                        });
-                    });
-                },
-                processData(data) {
-                    this.temp = Math.random(),
-                    console.log(this.temp);
-                    console.log("Processing data");
-                    this.lines = data.split("\n");
-                    _rows = [];
-                    for (let i = 1; i < this.lines.length; i++) {
-                        _rows.push(this.lines[i].split(","));
-                    }
-                    this.labels = this.lines[0].split(",");
-                    console.log("Done processing data");
-                    console.log(this.rows().length);
-                    
-                },
-                shorten(s) {
-                    if (!s) return "--"
-                    return s.substring(0, 5);
-                },
-                getColor(c) {
-                    if (!c) return "red";
-                    for (let i = 0; i < colorOptions.length; i++) {
-                        if (+c < +(colorOptions[i].amount))
-                            return colorOptions[i].color;
-                    }
-                    return colorOptions[colorOptions.length - 1].color;
-                }
+  <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+  <script src='https://unpkg.com/vue'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js'></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"
+    integrity="sha256-VeNaFBVDhoX3H+gJ37DpT/nTuZTdjYro9yBruHjVmoQ=" crossorigin="anonymous"></script>
 
 
-            },
+  <script>
+
+    let colorOptions = [
+      { amount: "10", color: "blue darken-4" },
+      { amount: "20", color: "blue darken-3" },
+      { amount: "30", color: "blue darken-2" },
+      { amount: "40", color: "blue darken-1" },
+      { amount: "50", color: "blue" },
+      { amount: "60", color: "blue lighten-1" },
+      { amount: "70", color: "blue lighten-2" },
+      { amount: "80", color: "blue lighten-3" },
+      { amount: "90", color: "blue lighten-4" },
+      { amount: "100", color: "blue lighten-5" },
+    ]
+
+    _rows = []
+
+    var app = new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data: {
+        temp: "hi",
+        date: "",
+        type: "",
+        bridges: [],
+        directionTraveled: "",
+        laneTraveled: "",
+        notes: "",
+        t: 0,
+        bridge: "Ponca",
+        speed: 0,
+        run: 0,
+        selected: 0,
+        data: [],
+        labels: [],
+
+
+      },
+      mounted() {
+        let that = this;
+        $.getJSON("data.json", function (data) {
+          that.data = data;
+          console.log(that.data);
+          $.getJSON("bridges.json", function (data) {
+            that.bridges = data;
+            console.log(that.bridges);
+          });
         });
 
+      },
+      computed: {
+
+        bridgeData() {
+          if (!this.bridge) return [];
+          return this.data.filter(i => i.Bridge == this.bridge);
+        },
+        bridgeDataAtSpeed() {
+          if (!this.bridge) return [];
+          return this.bridgeData.filter(i => i.Speed == this.speed);
+        },
+        speedData() {
+          if (!this.bridge) return [];
+          return this.bridgeData.filter(i => i.Speed == +this.speed);
+        },
+        testRuns() {
+          if (!this.bridge) return [];
+          return _.uniqBy(this.bridgeDataAtSpeed, "Test Run").map(i => i["Test Run"]);
+        },
+        testSpeeds() {
+          if (!this.bridge) return [];
+          return _.uniqBy(this.bridgeData, "Speed").map(i => i.Speed);
+        },
+        bridgeTestDate() {
+          if (!this.bridge || !this.data) return ""
+          return this.data.find(i => i.Bridge == this.bridge).Date;
+        },
+        bridgeNames() {
+          if (!this.data) return []
+          return _.uniqBy(this.data, 'Bridge').map(i => i.Bridge);
+        }
+      },
+      methods: {
+        getBridge(bridge) {
+          if (!bridge) return "";
+          let index = this.labels.findIndex(i => i.includes(bridge))
+          let value = this.rows()[this.t][index];
+          let shortened = value.substring(0, 4);
+          return shortened;
+        },
+        rows() {
+          return _rows;
+        },
+        chooseBridge(b) {
+          this.bridge = b;
+          this.chooseSpeed(0);
+        },
+        chooseSpeed(s) {
+          this.speed = s;
+          this.chooseRun(0);
+        },
+        chooseRun(r) {
+          this.t = 0;
+          let that = this;
+          this.run = r;
+          let file = this.data.find(i => i.Bridge == this.bridge && i.Speed == this.speed && i["Test Run"] == this.run);
+          if (!file) {
+            _rows = [];
+            return;
+          }
+          this.date = file.Date;
+          this.speed = file.Speed;
+          this.type = file.Type;
+          this.directionTraveled = file.DirectionTraveled;
+          this.laneTraveled = file.LaneTraveled;
+          this.notes = file.Notes;
+
+          //let sheetName = "("
+
+          let uri = "./data/" + file.FileName + " (SHEET2).csv";
+          uri = uri.replace("Ponca", "Ponka");
+          console.log(uri);
+
+          $(document).ready(function () {
+            $.ajax({
+              type: "GET",
+              url: uri,
+              dataType: "text",
+              success: function (data) { that.processData(data); }
+
+            });
+          });
+        },
+        processData(data) {
+          this.temp = Math.random(),
+            console.log(this.temp);
+          console.log("Processing data");
+          this.lines = data.split("\n");
+          _rows = [];
+          for (let i = 1; i < this.lines.length; i++) {
+            _rows.push(this.lines[i].split(","));
+          }
+          this.labels = this.lines[0].split(",");
+          console.log("Done processing data");
+          console.log(this.rows().length);
+
+        },
+        shorten(s) {
+          if (!s) return "--"
+          return s.substring(0, 5);
+        },
+        getColor(c) {
+          if (!c) return "red";
+          for (let i = 0; i < colorOptions.length; i++) {
+            if (+c < +(colorOptions[i].amount))
+              return colorOptions[i].color;
+          }
+          return colorOptions[colorOptions.length - 1].color;
+        }
+
+
+      },
+    });
 
 
 
 
 
 
-    </script>
+
+  </script>
 
 </body>
 
