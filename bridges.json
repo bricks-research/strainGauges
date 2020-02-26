@@ -4,9 +4,9 @@
     "width":"58'",
     "height":"36'10\"",
     "spacing":"2'10\"",
-    "up":"N",
-    "topSpacing":"5\"",
-    "bottomSpacing":"3\"",
+    "up":"North",
+    "topSpacing":"5'10\"",
+    "bottomSpacing":"3'",
     "topLayer":[
       null,
       "4524",
@@ -68,8 +68,82 @@
       null,
       null
     ]
-
-
-
+  },
+  {
+    "name":"Waterloo",
+    "width":"24'",
+    "height":"22'2\"",
+    "spacing":"Unknown",
+    "up":"North",
+    "topSpacing":"unkown",
+    "bottomSpacing":"unknown",
+    "topLayer":[
+      
+      "7091",
+      null,
+      "4596",
+      "7036",
+      "7043",
+      "7052",
+      "4535",
+      "7047",
+      "5404",
+      "6181"     
+    ],
+    "centerLayer":[
+      "7053",
+      "7061",
+      "7054",
+      "7048",
+      "7045",
+      "7050",
+      "7049",
+      "7058",
+      "5408",
+      "7057"     
+    ],
+    "bottomLayer":[
+      "7033",
+      "6876",
+      "4526",
+      "7034",
+      "4541",
+      "7040",
+      "7051",
+      "7038",
+      "5398",
+      "7094",
+      "5411",
+      "5384",
+      "7055",
+      "5397"   
+    ],
+    "otherSensors":
+    [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "2148",
+      null,
+      "2146",
+      null
+     
+    ],
+    "otherSensors2":
+    [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "2147",
+      null,
+      "2149",
+      null
+    ]
   }
 ]
