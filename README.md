@@ -1,6 +1,10 @@
 # Strain Gauges
 Heatmap visualization of strain gauge readings of four bridges under load.
 
+## Live Demo
+
+A live demo of the code in this repository can be found [here](http://bit.ly/strainguages).
+
 ## License
 
 The data files in this repo are licensed under the [Creative Commons BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), and the source code in this repo is licensed under the [MIT license](https://opensource.org/licenses/MIT).
