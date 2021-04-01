@@ -6,13 +6,41 @@
     <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <style>
+        /* https://www.w3schools.com/howto/howto_css_loader.asp */
+        .loader {
+            border: 16px solid #BCBBBA;
+            /* Light grey */
+            border-top: 16px solid #000000;
+            border-left: 16px solid #000000;
+            border-bottom: 16px solid #D71920;
+            border-right: 16px solid #000000;
+            /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            margin-right:auto;
+            margin-left:auto;
+            animation: spin 2s linear infinite;
+
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
 
 <body>
     <div id='app'>
         <v-app>
             <v-content>
-                <div class="white--text">{{temp}}</div>
                 <v-container>
                     <v-row>
                         <v-col>
@@ -54,7 +82,7 @@
                     </v-row>
 
                 </v-container>
-                <v-container v-if="rows().length > 0" class="text-center">
+                <v-container v-if="rows().length > 0 && !loading" class="text-center">
                     <v-row class="text-center">
                         <v-col>
                             <v-card>
@@ -127,13 +155,14 @@
                             </v-card>
                         </v-col>
                     </v-row>
-                   
+
                     <v-row class="my-5">
                         <v-col cols="1" class="title">
                             Timeline:
-                        </v-col >
-                        <v-col cols="11"> 
-                            <v-slider min="1" :max="rows().length" v-model="t" thumb-label="always" class="mb-n5"></v-slider>
+                        </v-col>
+                        <v-col cols="11">
+                            <v-slider min="1" :max="rows().length" v-model="t" thumb-label="always" class="mb-n5">
+                            </v-slider>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -212,14 +241,24 @@
                     </v-row>
 
                 </v-container>
-                <v-container v-else class="title text-center">
-                    <v-row>
-                        <v-col>
-                            Pick a location, speed and test run to see results here
-                        </v-col>
-                    </v-row>
+                <div v-else>
+                    
+                    <v-container v-if="!loading" class="title text-center">
+                        <v-row>
+                            <v-col>
+                                Pick a location, speed and test run to see results here
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                    <v-container v-if="loading" class="title text-center">
+                        <v-row>
+                            <v-col>
+                                <div class="loader"></div>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </div>
 
-                </v-container>
 
             </v-content>
         </v-app>
@@ -245,6 +284,7 @@
             el: '#app',
             vuetify: new Vuetify(),
             data: {
+                loading: false,
                 temp: "hi",
                 date: "",
                 type: "",
@@ -254,7 +294,7 @@
                 notes: "",
                 t: 0,
                 bridge: "Ponca",
-                showSensorName:false,
+                showSensorName: false,
 
 
                 speed: 0,
@@ -371,6 +411,7 @@
                         _rows = [];
                         return;
                     }
+                    this.loading = true;
                     this.date = file.Date;
                     this.speed = file.Speed;
                     this.type = file.Type;
@@ -427,6 +468,7 @@
                     this.labels = this.lines[0].split(",");
                     console.log("Done processing data");
                     console.log(this.rows().length);
+                    this.loading = false;
 
                 },
                 shorten(s) {
